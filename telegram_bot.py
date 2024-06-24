@@ -84,6 +84,8 @@ def handle_photo(update, context):
     
     #obtain bounding boxes of processed image
     bounding_boxes = response.json()['bboxes']
+    # obtain list of converted text
+    str_list = response.json()['text']
 
     #update.message.reply_text(list_of_lists_to_string(bounding_boxes))
     
@@ -112,9 +114,13 @@ def handle_photo(update, context):
     # send image stream to client
     context.bot.send_photo(chat_id=update.message.chat_id, photo=b_img_bytes,caption='')
     
+    # join strings of list in one single string separated by newlines
+    joined_text = '\n'.join(str_list)
+    # Send text to client
+    update.message.reply_text(joined_text)
+
     
-
-
+    
 
 updater = Updater(TOKEN, use_context=True)
 dp = updater.dispatcher

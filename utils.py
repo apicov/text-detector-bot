@@ -6,6 +6,21 @@ import cv2
 import numpy as np
 from io import BytesIO
 
+def cv2_to_PIL(image):
+    """
+    Converts an OpenCV image to a Pillow image.
+
+    Parameters:
+    image (numpy.ndarray): The OpenCV image to convert.
+
+    Returns:
+    Pillow image.
+    """
+    c_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    pil_img = Image.fromarray(c_image)
+    
+    return pil_img
+    
 def cv2_to_bytes(image):
     """
     Converts an OpenCV image to a byte stream.
