@@ -27,6 +27,8 @@ class TextDetector:
         # optical character recognition using paddleocr library
         self.ocr = PaddleOCR(rec=False, **kwargs)
         
+        self.binary_image = None
+        
         
     def _preprocess_image(self, img):
         ''' 
@@ -45,7 +47,15 @@ class TextDetector:
         blurred_img = cv2.GaussianBlur(gray_img, (5, 5), 0)
         
         # Apply thresholding
-        _, binary_img = cv2.threshold(blurred_img, 0, 255, cv2.THRESH_OTSU)
+        #_, binary_img = cv2.threshold(blurred_img, 0, 255, cv2.THRESH_OTSU)
+        
+        binary_img = cv2.adaptiveThreshold(gray_img, 
+                                               255, # maximum value
+                                               cv2.ADAPTIVE_THRESH_MEAN_C, 
+                                               cv2.THRESH_BINARY,
+                                               11, # size of block
+                                               20)  # constant subtracted from the mean
+        
         
         return binary_img
 
@@ -59,10 +69,13 @@ class TextDetector:
         Returns:
         list of bounding boxes 
         '''
-        result = self.ocr.ocr( self._preprocess_image(img), rec=False,)
-        bounding_boxes = result[0]
+        binary_image = self._preprocess_image(img)
+        result = self.ocr.ocr(binary_image , rec=False,)
+        bounding_boxes =  [] if result[0] is None else result[0]
         
-        return bounding_boxes
+        
+        
+        return bounding_boxes, binary_image
     
     def draw(self, img, bboxes):
         ''' 

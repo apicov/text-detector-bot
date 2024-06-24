@@ -85,7 +85,7 @@ def handle_photo(update, context):
     #obtain bounding boxes of processed image
     bounding_boxes = response.json()['bboxes']
 
-    update.message.reply_text(list_of_lists_to_string(bounding_boxes))
+    #update.message.reply_text(list_of_lists_to_string(bounding_boxes))
     
     # Draw bounding boxes to image
     bboxes_img = cv2.polylines(image, 
@@ -101,6 +101,16 @@ def handle_photo(update, context):
 
     # send image stream to client
     context.bot.send_photo(chat_id=update.message.chat_id, photo=bboxes_bytes,caption='')
+    
+    
+    b_img_base64 = response.json()['binary_image']
+    b_img = base64_to_cv2(b_img_base64)
+    # Convert  image to a byte stream
+    b_img_bytes = cv2_to_bytes(b_img)
+    b_img_bytes.seek(0)
+
+    # send image stream to client
+    context.bot.send_photo(chat_id=update.message.chat_id, photo=b_img_bytes,caption='')
     
     
 

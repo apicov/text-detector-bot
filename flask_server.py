@@ -15,9 +15,9 @@ ocr = TextDetector(
         lang='en', #lang='german',char=True,
         #det_model_dir="./fce_model",#"./pse_model",
         det=True,        # Enable text detection
-        drop_score=.6,
-        #det_db_thresh=0.1,
-        det_db_box_thresh=0.4,
+        drop_score=.7,
+        #det_db_thresh=0.6,
+        det_db_box_thresh=0.4, #box threshold for text detection.
         #det_db_unclip_ratio=4,
         det_algorithm='DB++',
         use_gpu=False,
@@ -43,12 +43,15 @@ def process_image():
     img = base64_to_cv2(img_str)
     
     # Obtain bounding boxes
-    bounding_boxes = ocr(img)
+    bounding_boxes, binary_image = ocr(img)
+    
+    base64_bimg = cv2_to_base64(binary_image)
         
     # Return bounding boxes
     print('ready to make response')
     response = {
-        "bboxes": bounding_boxes
+        "bboxes": bounding_boxes,
+        "binary_image":base64_bimg
     }
     return jsonify(response)
 
