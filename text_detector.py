@@ -38,13 +38,16 @@ class TextDetector:
         Returns:
         black and white opencv image 
         '''
+        # Convert to grayscale
+        gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
         # Apply Gaussian blur
-        blurred_image = cv2.GaussianBlur(img, (5, 5), 0)
+        blurred_img = cv2.GaussianBlur(gray_img, (5, 5), 0)
         
         # Apply thresholding
-        _, binary_image = cv2.threshold(blurred_image, 0, 255, cv2.THRESH_OTSU)
+        _, binary_img = cv2.threshold(blurred_img, 0, 255, cv2.THRESH_OTSU)
         
-        return binary_image
+        return binary_img
 
     def __call__(self, img):
         ''' 
@@ -77,7 +80,7 @@ class TextDetector:
         
         return cv2.cvtColor(bounding_boxes_img, cv2.COLOR_BGR2RGB)
     
-    def crop_bounding_boxes(self, img, bboxes)
+    def crop_bounding_boxes(self, img, bboxes):
         ''' 
         Crops bounding boxes from image.
 
