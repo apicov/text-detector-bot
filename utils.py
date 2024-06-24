@@ -4,6 +4,45 @@ import base64
 import random
 import cv2
 import numpy as np
+from io import BytesIO
+
+def cv2_to_bytes(image):
+    """
+    Converts an OpenCV image to a byte stream.
+
+    Parameters:
+    image (numpy.ndarray): The OpenCV image to convert.
+
+    Returns:
+    BytesIO: The byte stream of the image.
+    """
+    # Encode the image as a JPEG
+    success, encoded_image = cv2.imencode('.jpg', image)
+    if not success:
+        raise ValueError("Could not encode image to JPEG format.")
+    
+    # Convert the encoded image to a byte stream
+    image_bytes = BytesIO(encoded_image.tobytes())
+    return image_bytes
+
+
+def bytes_to_cv2(byte_stream):
+    """
+    Converts a byte stream back to an OpenCV image.
+
+    Parameters:
+    byte_stream (BytesIO or bytes): The byte stream containing the image data.
+
+    Returns:
+    numpy.ndarray: The OpenCV image array.
+    """
+    # Convert the byte stream to a numpy array
+    byte_stream.seek(0)
+    img_bytes =  np.frombuffer(byte_stream.read(), np.uint8)
+
+    # Decode the numpy array into an OpenCV image
+    image = cv2.imdecode(img_bytes, cv2.IMREAD_COLOR)
+    return image
 
 
 def cv2_to_base64(image):
