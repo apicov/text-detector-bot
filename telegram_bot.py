@@ -117,7 +117,8 @@ def handle_photo(update, context):
     # join strings of list in one single string separated by newlines
     joined_text = '\n'.join(str_list)
     # Send text to client
-    update.message.reply_text(joined_text)
+    if joined_text != '':
+        update.message.reply_text(joined_text)
 
     
     

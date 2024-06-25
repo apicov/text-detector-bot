@@ -22,6 +22,7 @@ ocr = TextDetector(
         #det_db_unclip_ratio=4,
         det_algorithm='DB++',
         use_gpu=False,
+        crop_type='box'
 )
 
 # Create instance of text recognizer

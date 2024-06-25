@@ -56,8 +56,14 @@ class TextDetector:
                                                11, # size of block
                                                20)  # constant subtracted from the mean
         
+        # The aim is to dilate black areas
+        # erosion is used becaous eit works on white areas
+        # Create a kernel
+        kernel = np.ones((3, 3), np.uint8)
+        # Apply dilation
+        dilated_image = cv2.erode(binary_img, kernel, iterations=1)
         
-        return binary_img
+        return dilated_image
 
     def __call__(self, img):
         ''' 
