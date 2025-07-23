@@ -1,3 +1,7 @@
+"""
+Text detection module using PaddleOCR.
+Provides the TextDetector class for detecting text regions in images.
+"""
 import os
 import sys
 import requests
@@ -13,16 +17,20 @@ from paddleocr import PaddleOCR, draw_ocr
 
 
 class TextDetector:
-    '''
-    A class for detecting text in an image.
-    '''
-    def __init__(self, **kwargs):
-        ''' 
-        Initializes ocr detector 
+    """
+    A class for detecting text in an image using PaddleOCR.
 
-        Parameters:
-        kwargs(see PaddleOCR docs) 
-        '''
+    Attributes:
+        ocr (PaddleOCR): The PaddleOCR detector instance.
+        binary_image (np.ndarray): The last binarized image processed.
+    """
+    def __init__(self, **kwargs):
+        """
+        Initializes the OCR detector.
+
+        Args:
+            **kwargs: Keyword arguments for PaddleOCR (see PaddleOCR docs).
+        """
         
         # optical character recognition using paddleocr library
         self.ocr = PaddleOCR(rec=False, **kwargs)
@@ -31,15 +39,15 @@ class TextDetector:
         
         
     def _preprocess_image(self, img):
-        ''' 
-        Applies Gaussianblur and binarizes input image
+        """
+        Applies Gaussian blur and binarizes the input image.
 
-        Parameters:
-        img (numpy array): opencv image
+        Args:
+            img (np.ndarray): OpenCV image.
 
         Returns:
-        black and white opencv image 
-        '''
+            np.ndarray: Black and white (binarized) OpenCV image.
+        """
         # Convert to grayscale
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -66,15 +74,15 @@ class TextDetector:
         return dilated_image
 
     def __call__(self, img):
-        ''' 
-        Applies character detection to image.
+        """
+        Applies character detection to an image.
 
-        Parameters:
-        img (numpy array): opencv image
+        Args:
+            img (np.ndarray): OpenCV image.
 
         Returns:
-        list of bounding boxes 
-        '''
+            Tuple[list, np.ndarray]: List of bounding boxes and the binarized image.
+        """
         binary_image = self._preprocess_image(img)
         result = self.ocr.ocr(binary_image , rec=False,)
         bounding_boxes =  [] if result[0] is None else result[0]
@@ -84,32 +92,32 @@ class TextDetector:
         return bounding_boxes, binary_image
     
     def draw(self, img, bboxes):
-        ''' 
-        Draws bounding boxes to image.
+        """
+        Draws bounding boxes on the image.
 
-        Parameters:
-        img (numpy array): opencv image
-        bboxes (numpy array): list of bounding boxes
+        Args:
+            img (np.ndarray): OpenCV image.
+            bboxes (list): List of bounding boxes.
 
         Returns:
-        image with bounding boxes
-        '''
+            np.ndarray: Image with bounding boxes drawn.
+        """
         bounding_boxes_img = img.copy()
         cv2.polylines(bounding_boxes_img, np.array(bboxes, dtype=np.int32), isClosed=True, color=(0, 255, 0), thickness=2)
         
         return cv2.cvtColor(bounding_boxes_img, cv2.COLOR_BGR2RGB)
     
     def crop_bounding_boxes(self, img, bboxes):
-        ''' 
-        Crops bounding boxes from image.
+        """
+        Crops bounding boxes from the image.
 
-        Parameters:
-        img (numpy array): opencv image
-        bboxes (numpy array): list of bounding boxes
+        Args:
+            img (np.ndarray): OpenCV image.
+            bboxes (list): List of bounding boxes.
 
         Returns:
-        list of cropped images
-        '''
+            list: List of cropped images (np.ndarray).
+        """
         cropped_images = []
 
         for box in bboxes:

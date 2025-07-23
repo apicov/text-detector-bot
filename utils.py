@@ -1,3 +1,6 @@
+"""
+Utility functions for image conversion and encoding/decoding between OpenCV, PIL, bytes, and base64.
+"""
 from PIL import Image
 import io
 import base64

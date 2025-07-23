@@ -1,3 +1,7 @@
+"""
+Flask server for text detection and recognition API.
+Exposes an endpoint for processing images and returning detected text and bounding boxes.
+"""
 from flask import Flask, request, send_file, jsonify
 from PIL import Image
 import io
@@ -34,11 +38,10 @@ app = Flask(__name__)
 @app.route('/api/process_image/', methods=['POST'])
 def process_image():
     """
-    Detect text in received image
+    Detect text in a received image via POST request.
 
     Returns:
-        Response: A Flask response object containing a JSON with 
-        the boundary boxes found in image
+        flask.Response: JSON with bounding boxes, binarized image (base64), and recognized text.
     """
     print('processing query ...')
     
@@ -73,6 +76,9 @@ def process_image():
 
 
 def main():
+    """
+    Starts the Flask server.
+    """
     app.run()
 
 

@@ -1,3 +1,7 @@
+"""
+Telegram bot for image text detection and recognition.
+Receives images, sends them to the Flask API, and returns results to the user.
+"""
 #from telegram.ext import *
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from telegram import InputFile
@@ -27,26 +31,35 @@ TOKEN = data['telegram_token']
 
 def list_of_lists_to_string(list_of_lists):
     """
-    Convert list of lists to a string
-    
-    Parameters:
-    list_of_lists
-    
-    Return:
-    String
-    
+    Convert a list of lists to a JSON string.
+
+    Args:
+        list_of_lists (list): List of lists to convert.
+
+    Returns:
+        str: JSON string representation.
     """
     return json.dumps(list_of_lists)
 
 
 def start(update, context):
+    """
+    Handler for the /start command. Sends a greeting message.
+
+    Args:
+        update (telegram.Update): Incoming update.
+        context (telegram.ext.CallbackContext): Context for the update.
+    """
     update.message.reply_text("Hola")
     
  
 def handle_photo(update, context):
     """
-    Receive message with picture and send it to ocr server.
-    Send back picture with drawn bounding boxes
+    Handler for incoming photo messages. Sends the image to the OCR server and returns results.
+
+    Args:
+        update (telegram.Update): Incoming update.
+        context (telegram.ext.CallbackContext): Context for the update.
     """
     # Check if the message contains an image
     #if update.message.photo:
